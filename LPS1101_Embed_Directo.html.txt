@@ -1,0 +1,45 @@
+<style>
+#lps1101-ruleta{font-family:Segoe UI,Arial,sans-serif;color:#132747;background:#edf3fa;padding:16px;box-sizing:border-box}#lps1101-ruleta *{box-sizing:border-box}#lps1101-ruleta main{max-width:850px;margin:0 auto;background:white;padding:clamp(16px,4vw,32px);border-radius:20px;box-shadow:0 10px 28px #12345718}#lps1101-ruleta h1{text-align:center;color:#003865;margin:0;font-size:clamp(25px,5vw,36px)}#lps1101-ruleta .sub{text-align:center;margin:10px auto 25px;line-height:1.5}#lps1101-ruleta .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}#lps1101-ruleta .tile{background:#eef5ff;border:1px solid #c6dcf5;border-radius:14px;padding:20px 12px;min-height:138px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px}#lps1101-ruleta .tile.secret{background:#fff4de;border-color:#f1d08c}#lps1101-ruleta .small{font-size:12px;font-weight:800;letter-spacing:1px;color:#4d617b}#lps1101-ruleta .value{font-size:clamp(17px,2.6vw,23px);font-weight:750;color:#003865;overflow-wrap:anywhere}#lps1101-ruleta .actions{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:20px 0}#lps1101-ruleta button{font:inherit;background:#003865;border:0;color:white;border-radius:10px;padding:13px 19px;cursor:pointer;font-weight:650}#lps1101-ruleta button:hover{background:#145b90}#lps1101-ruleta button:focus-visible{outline:3px solid #d78b00;outline-offset:3px}#lps1101-ruleta button.secondary{background:#e4edf8;color:#003865}#lps1101-ruleta button.secondary:hover{background:#cddff3}#lps1101-ruleta .round{text-align:center;font-weight:700}#lps1101-ruleta section.timer{text-align:center;background:#eaf7f1;border-radius:12px;padding:15px;margin-top:22px}#lps1101-ruleta .time{font-size:38px;color:#156b4c;font-weight:800;font-variant-numeric:tabular-nums;margin-top:8px}#lps1101-ruleta .timer .actions{margin:12px 0 0}#lps1101-ruleta .help{background:#f5f8fc;border-radius:12px;padding:20px;margin-top:20px;line-height:1.6}#lps1101-ruleta .help h2{font-size:19px;color:#003865;margin:0 0 8px}#lps1101-ruleta .help p{margin:6px 0}#lps1101-ruleta .status{text-align:center;font-weight:700;color:#156b4c;min-height:1.6em}@media(max-width:480px){#lps1101-ruleta{padding:6px}#lps1101-ruleta .grid{gap:8px}#lps1101-ruleta .tile{padding:12px 8px;min-height:125px}#lps1101-ruleta .actions button{flex:1 1 180px}}
+</style>
+<div id="lps1101-ruleta">
+<main>
+<h1>¡La ruleta de los planes!</h1>
+<p class="sub">LPS1101 · ¿Quedamos? · Trabajad en parejas. A invita y B responde. Después, acordad dónde y cuándo quedar.</p>
+<div class="grid" aria-live="polite">
+ <div class="tile"><div class="small">ACTIVIDAD</div><div class="value" id="activity">ir al cine</div></div>
+ <div class="tile"><div class="small">DÍA</div><div class="value" id="day">el sábado</div></div>
+ <div class="tile"><div class="small">HORA</div><div class="value" id="hour">a las siete</div></div>
+ <div class="tile secret"><div class="small">RESPUESTA SECRETA · B</div><div class="value" id="response">Respuesta oculta</div></div>
+</div>
+<div class="actions"><button id="spin" type="button">↻ ¡Girar la ruleta!</button><button id="reveal" class="secondary" type="button" aria-pressed="false">Mostrar respuesta (B)</button></div>
+<div class="round" id="round">Ronda 1</div>
+<section class="timer"><strong>Tiempo para hablar</strong><div class="time" id="clock" role="timer">01:30</div><div class="actions"><button id="start" type="button">Iniciar</button><button id="reset" class="secondary" type="button">Reiniciar tiempo</button></div><div class="status" id="status" aria-live="polite"></div></section>
+<section class="help"><h2>Instrucciones</h2><p><b>Estudiante A:</b> Invita a tu compañero/a a hacer la actividad que aparece, el día y la hora indicados.</p><p><b>Estudiante B:</b> Revela tu respuesta secreta sin mostrársela a A. Responde en español.</p><p><b>Los dos:</b> Negociad vuestros planes y decidid cuándo y dónde quedar.</p><h2 style="margin-top:16px">Expresiones útiles</h2><p>¿Te apetece…? · ¿Quieres…? · ¡Claro! · ¡Buena idea! · Lo siento, no puedo. · Tengo otros planes. · ¿A qué hora quedamos? · ¿Dónde quedamos? · ¿Te viene bien el sábado?</p></section>
+</main>
+</div>
+<script>
+(function(){
+'use strict';
+const activities=['ir al cine','tomar un café','ir a un concierto','visitar un museo','comer en un restaurante','pasear por el parque','ir de compras','jugar al tenis','estudiar juntos','ir a una fiesta'];
+const days=['el lunes','el martes','el miércoles','el jueves','el viernes','el sábado','el domingo','mañana'];
+const hours=['a las diez','a las doce','a las tres','a las cuatro','a las cinco','a las seis','a las siete','a las ocho'];
+const responses=['Acepta con entusiasmo.','No puedes: tienes otros planes.','Propón otra hora.','Propón otro día.','No te apetece. Explica por qué.','Sugiere otro lugar.','Acepta, pero propone otra actividad.','Estás ocupado/a. Sugiere el domingo.','Acepta y pregunta dónde quedáis.','Rechaza la invitación educadamente.'];
+const root=document.getElementById('lps1101-ruleta');
+if(!root || root.dataset.ready==='true') return;
+root.dataset.ready='true';
+const el=id=>root.querySelector('[id=+id+]');
+const choose=items=>items[Math.floor(Math.random()*items.length)];
+let round=1,secret=choose(responses),shown=false,seconds=90,interval=null;
+function clock(){el('clock').textContent=String(Math.floor(seconds/60)).padStart(2,'0')+':'+String(seconds%60).padStart(2,'0')}
+function stop(){if(interval!==null){clearInterval(interval);interval=null}el('start').textContent='Iniciar'}
+function reset(){stop();seconds=90;clock();el('status').textContent=''}
+function reveal(){shown=!shown;el('response').textContent=shown?secret:'Respuesta oculta';el('reveal').textContent=shown?'Ocultar respuesta':'Mostrar respuesta (B)';el('reveal').setAttribute('aria-pressed',String(shown))}
+function spin(){el('activity').textContent=choose(activities);el('day').textContent=choose(days);el('hour').textContent=choose(hours);secret=choose(responses);if(shown)reveal();round++;el('round').textContent='Ronda '+round;reset()}
+function start(){if(interval!==null){stop();return}if(seconds===0)seconds=90;clock();el('start').textContent='Pausar';el('status').textContent='';interval=setInterval(()=>{seconds--;clock();if(seconds<=0){stop();el('start').textContent='Repetir';el('status').textContent='¡Tiempo! Cambiad de pareja o girad la ruleta.'}},1000)}
+el('spin').addEventListener('click',spin);
+el('reveal').addEventListener('click',reveal);
+el('start').addEventListener('click',start);
+el('reset').addEventListener('click',reset);
+clock();
+})();
+</script>
